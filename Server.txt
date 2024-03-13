@@ -1,10 +1,10 @@
-import socket
+simport socket
 import threading
 import time
 
 list_hostname = []
 z_command = "empty"
-notice = "hello world"
+notice = "empty"
 
 # definition du thread
 nb_z = 0

