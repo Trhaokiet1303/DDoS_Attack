@@ -18,6 +18,10 @@ import (
 	"github.com/gookit/color"
 )
 
+import os
+import colorama
+from colorama import Fore
+
 var (
 	referers []string = []string{
 		"https://www.google.com/?q=",
@@ -95,11 +99,16 @@ func main() {
 	flag.StringVar(&hostname, "hostname", "", "example: --hostname https://example.com")
 	flag.Parse()
 
-	if len(hostname) == 0 {
-		color.Red.Println("Missing hostname.")
-		color.Blue.Println("Example usage:\n\t ./getblaze --hostname https//:haokiet.click") //sửa hostname thành tên miền cần DDoS
+
+	colorama.init()
+
+	if len(hostname) == 0:
+		colorama.Fore.RED.print("Missing hostname.")
+		colorama.Fore.BLUE.print("Example usage:\n\t ./getblaze --hostname https//:haokiet.click")
 		os.Exit(1)
-	}
+	else:
+		domain = input("Nhập tên miền: ")
+		colorama.Fore.BLUE.print(f"Example usage:\n\t ./getblaze --hostname https//:{domain}")
 
 	color.Yellow.Println("Press control+c to stop")
 	time.Sleep(2 * time.Second)
