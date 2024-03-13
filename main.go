@@ -17,10 +17,11 @@ import (
 	"github.com/corpix/uarand"
 	"github.com/gookit/color"
 )
-
 import os
 import colorama
 from colorama import Fore
+
+colorama.init()
 
 var (
 	referers []string = []string{
@@ -99,12 +100,8 @@ func main() {
 	flag.StringVar(&hostname, "hostname", "", "example: --hostname https://example.com")
 	flag.Parse()
 
-
-	colorama.init()
-
 	if len(hostname) == 0:
 		colorama.Fore.RED.print("Missing hostname.")
-		colorama.Fore.BLUE.print("Example usage:\n\t ./getblaze --hostname https//:haokiet.click")
 		os.Exit(1)
 	else:
 		domain = input("Nhập tên miền: ")
